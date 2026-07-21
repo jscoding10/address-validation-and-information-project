@@ -1,0 +1,6 @@
+@address_validation_and_information_project_HostAddress = http://localhost:5100
+
+GET {{address_validation_and_information_project_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
