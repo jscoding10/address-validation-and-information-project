@@ -9,10 +9,12 @@ namespace AddressVerification.Controllers;
 public class AddressValidationController : ControllerBase
 {
     private readonly IAddressGeocodingService _geocodingService;
+    private readonly IZillowService _zillowService;
     // Constructor for dependency injection
-    public AddressValidationController(IAddressGeocodingService geocodingService)
+    public AddressValidationController(IAddressGeocodingService geocodingService, IZillowService zillowService)
     {
         _geocodingService = geocodingService;
+        _zillowService = zillowService;
     }
 
     [HttpGet("suggest/{address}/{countryCode}")]
@@ -49,6 +51,25 @@ public class AddressValidationController : ControllerBase
         catch (ExternalServiceException)
         {
             return StatusCode(502, "External geocoding service unavailable");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An unexpected error occurred");
+        }
+    }
+    [HttpGet("zillow/{address}")]
+    public async Task<ActionResult<string>> GetZillowInfo(
+    [FromRoute] ZillowPropertyRequest request,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _zillowService.GetPropertyByAddressAsync(request.Address, cancellationToken);
+            return Ok(result);
+        }
+        catch (ExternalServiceException)
+        {
+            return StatusCode(502, "External property data service unavailable");
         }
         catch (Exception)
         {
