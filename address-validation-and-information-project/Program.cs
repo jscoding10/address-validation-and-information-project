@@ -12,7 +12,13 @@ builder.Services.AddHttpClient<IAddressGeocodingService, ArcGisGeocodingService>
 {
     client.Timeout = TimeSpan.FromSeconds(15);
 });
-
+// Zillow Configuration
+builder.Services.Configure<ZillowOptions>(builder.Configuration.GetSection("Zillow"));
+// Register Zillow service
+builder.Services.AddHttpClient<IZillowService, ZillowService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(20);
+});
 // CORS
 builder.Services.AddCors(options =>
 {
