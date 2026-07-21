@@ -34,8 +34,6 @@ public class ZillowService : IZillowService
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            Console.WriteLine(content);
-
             return content;
         }
         catch (HttpRequestException ex)
